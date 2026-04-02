@@ -10,20 +10,18 @@ import sys
 
 if __name__ == "__main__":
     employee_id = int(sys.argv[1])
-    base_url = "https://jsonplaceholder.typicode.com"
+    url = "https://jsonplaceholder.typicode.com"
 
-    user = requests.get(f"{base_url}/users/{employee_id}").json()
+    user = requests.get("{}/users/{}".format(url, employee_id)).json()
     employee_name = user.get("name")
 
-    todos = requests.get(f"{base_url}/todos",
-                         params={"userId": employee_id}).json()
+    todos = requests.get("{}/todos?userId={}".format(
+        url, employee_id)).json()
 
-    total_tasks = len(todos)
-    done_tasks = [t for t in todos if t.get("completed") is True]
-    num_done = len(done_tasks)
+    done = [t for t in todos if t.get("completed") is True]
 
     print("Employee {} is done with tasks({}/{}):".format(
-        employee_name, num_done, total_tasks))
+        employee_name, len(done), len(todos)))
 
-    for task in done_tasks:
+    for task in done:
         print("\t {}".format(task.get("title")))
